@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>방구차</title>
+<style>
+  /* 아이폰 사파리: 버튼을 누르다 글자가 선택되거나 길게 눌러 복사 메뉴가 뜨지 않게 */
+  *, *::before, *::after { -webkit-user-select:none; user-select:none; -webkit-touch-callout:none; }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html, body {
+    width:100%; height:100%; overflow:hidden; background:#000;
+    font-family:-apple-system, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; color:#fff;
+    touch-action:none;
+  }
+  #stage { width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; padding:6px 8px; }
+  #wrap { position:relative; background:#000; }
+  #game { display:block; touch-action:none; image-rendering:pixelated; }
+  #overlay { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; text-align:center; padding:14px; background:rgba(0,0,0,.82); }
+  #overlay.hidden { display:none; }
+  #overlay h1 { font-size:32px; font-weight:900; letter-spacing:.04em; color:#5ac8ff; text-shadow:0 3px 0 #0a4f7a; }
+  #overlay h2 { font-size:24px; font-weight:900; }
+  #overlay p { font-size:13px; color:#e6e6e6; line-height:1.6; }
+  #overlay .big { font-size:18px; font-weight:800; color:#ffd23a; }
+  #overlay .help { font-size:12px; color:#bdbdbd; line-height:1.7; }
+  #overlay button { margin-top:6px; background:linear-gradient(180deg,#8ee0ff,#3aa8e8); color:#00263d; font-weight:900; font-size:17px; border:none; border-radius:999px; padding:12px 34px; box-shadow:0 4px 0 #1a6a9a; cursor:pointer; }
+  #overlay button:active { transform:translateY(3px); box-shadow:0 1px 0 #1a6a9a; }
+  #top { position:absolute; right:3px; bottom:3px; display:flex; gap:6px; z-index:2; }
+  #top button { position:relative; background:rgba(0,0,0,.55); border:1px solid rgba(255,255,255,.25); color:#fff; width:30px; height:30px; border-radius:8px; font-size:13px; cursor:pointer; }
+  #top button::after { content:''; position:absolute; inset:-7px -4px; }
+  /* 폰 조작판: 왼쪽 방향 패드, 오른쪽 연막 버튼 */
+  #controls { display:none; width:100%; justify-content:space-between; align-items:center; padding:0 10px; }
+  #pad { position:relative; width:128px; height:128px; border-radius:50%; background:rgba(255,255,255,.08); border:2px solid rgba(255,255,255,.2); touch-action:none; }
+  #pad i { position:absolute; font-style:normal; color:rgba(255,255,255,.35); font-size:20px; }
+  #pad i.on { color:#5ac8ff; }
+  #pad .u { left:50%; top:6px; transform:translateX(-50%); } #pad .d { left:50%; bottom:6px; transform:translateX(-50%); }
+  #pad .l { top:50%; left:10px; transform:translateY(-50%); } #pad .r { top:50%; right:10px; transform:translateY(-50%); }
+  #pad b { position:absolute; width:46px; height:46px; border-radius:50%; background:rgba(255,255,255,.2); left:41px; top:41px; }
+  #smokeBtn { width:96px; height:96px; border-radius:50%; border:3px solid rgba(255,255,255,.3); background:radial-gradient(circle at 35% 30%, #d8e4ee, #6b7f90); color:#fff; font-size:17px; font-weight:900; touch-action:none; }
+  #smokeBtn.on { transform:scale(.93); filter:brightness(1.25); }
+  .pc { display:none; }
+  @media (pointer:fine) { .pc { display:inline; } .touch { display:none; } }
+  @media (pointer:coarse) { #controls { display:flex; } }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="wrap">
+    <canvas id="game"></canvas>
+    <div id="top">
+      <button id="muteBtn" title="소리 (M)">🔊</button>
+      <button id="pauseBtn" title="일시정지 (P)">⏸</button>
+    </div>
+    <div id="overlay">
+      <h1>방구차</h1>
+      <p>미로의 <b>깃발 10개</b>를 모으세요!<br>쫓아오는 빨간 차에는 <b>연막(방구)</b>을 뿜어요 💨</p>
+      <div class="help">
+        <span class="pc">⌨️ 방향키 / WASD 로 방향 바꾸기 · 스페이스 연막<br>P 일시정지 · M 소리</span>
+        <span class="touch">👆 왼쪽 패드로 방향 바꾸기 · 오른쪽 버튼 꾹 눌러 연막</span>
+      </div>
+      <button id="startBtn">시작하기</button>
+    </div>
+  </div>
+  <div id="controls">
+    <div id="pad"><i class="u">▲</i><i class="d">▼</i><i class="l">◀</i><i class="r">▶</i><b></b></div>
+    <button id="smokeBtn">연막</button>
+  </div>
+</div>
+<script src="logic.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
