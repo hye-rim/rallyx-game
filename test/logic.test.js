@@ -58,12 +58,12 @@ test('a round has 10 flags reachable without touching rocks, the first one close
 });
 
 test('red cars: 3 at first, more later, none in bonus rounds, and they get faster', () => {
-  assert.strictEqual(L.redCount(1), 3);
+  assert.strictEqual(L.redCount(1), 2);
   assert.strictEqual(L.redCount(4), 0);
   assert.strictEqual(L.redCount(8), 0);
   assert.ok(L.redCount(10) >= 4 && L.redCount(30) <= 5);
   assert.ok(L.redSpeedFactor(1) < L.redSpeedFactor(6));
-  assert.ok(L.redSpeedFactor(50) <= 1);
+  assert.ok(L.redSpeedFactor(50) <= 0.9, 'red cars never as fast as the player');
 });
 
 test('the car keeps going by itself, turns at a junction, and stops at a wall', () => {
@@ -130,7 +130,7 @@ test('collecting all 10 flags clears the round, adds a fuel bonus and starts the
   assert.strictEqual(st.phase, 'play');
   assert.ok(st.fuel > L.FUEL_MAX - 1, 'full tank again');
   assert.ok(st.score > 5500);
-  assert.strictEqual(st.cars.length, 3);
+  assert.strictEqual(st.cars.length, L.redCount(2));
 });
 
 test('round 4 is a bonus round without red cars or smoke, and flags count double', () => {

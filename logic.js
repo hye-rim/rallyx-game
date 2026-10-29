@@ -26,8 +26,8 @@ const rng = (seed) => {                                      // mulberry32 (시�
 };
 const emit = (st, e) => { st.events.push(e); };
 const isBonusRound = (r) => r % 4 === 0;                    // 4라운드마다 빨간 차가 없는 보너스 라운드
-const redCount = (r) => (isBonusRound(r) ? 0 : Math.min(5, 3 + Math.floor((r - 1) / 3)));
-const redSpeedFactor = (r) => Math.min(1, 0.74 + 0.035 * r);
+const redCount = (r) => (isBonusRound(r) ? 0 : Math.min(5, 2 + Math.floor((r - 1) / 3)));
+const redSpeedFactor = (r) => Math.min(0.9, 0.68 + 0.025 * r);
 
 // ---------- 미로 ----------
 // 갈림길 18x18 을 깊이 우선으로 이어 만든 뒤, 막힌 벽을 일부 터서 돌아갈 길(고리)을 만든다
