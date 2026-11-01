@@ -7,10 +7,10 @@ const CELLS = 18, T = CELLS * 3 + 1;                       // 미로는 18x18 �
 const DX = [0, 1, 0, -1], DY = [-1, 0, 1, 0];
 const START_LIVES = 3, FLAGS_PER_ROUND = 10;
 const PLAYER_SPEED = 5.2;                                   // 칸/초
-const FUEL_MAX = 100, FUEL_DRAIN = 1.1, SMOKE_COST = 0.35, SMOKE_EVERY = 0.1, SMOKE_LIFE = 1.4, SMOKE_RADIUS = 0.8;
-const STUN_SMOKE = 2.6, STUN_ROCK = 3.2;
+const FUEL_MAX = 100, FUEL_DRAIN = 0.9, SMOKE_COST = 0.35, SMOKE_EVERY = 0.1, SMOKE_LIFE = 1.4, SMOKE_RADIUS = 0.8;
+const STUN_SMOKE = 3.2, STUN_ROCK = 3.6;
 const POINTS = { smoke: 80, rock: 50, fuelLeft: 10 };
-const EXTRA_LIFE_AT = [20000, 60000];                      // 이후에는 4만 점마다
+const EXTRA_LIFE_AT = [15000, 50000];                      // 이후에는 4만 점마다
 const MAZE_SEEDS = [11, 23, 37];
 const START = { x: 1 + 3 * 9, y: 1 + 3 * 9 };               // 가운데 갈림길
 
@@ -26,8 +26,8 @@ const rng = (seed) => {                                      // mulberry32 (시�
 };
 const emit = (st, e) => { st.events.push(e); };
 const isBonusRound = (r) => r % 4 === 0;                    // 4라운드마다 빨간 차가 없는 보너스 라운드
-const redCount = (r) => (isBonusRound(r) ? 0 : Math.min(5, 2 + Math.floor((r - 1) / 3)));
-const redSpeedFactor = (r) => Math.min(0.9, 0.68 + 0.025 * r);
+const redCount = (r) => (isBonusRound(r) ? 0 : Math.min(4, 2 + Math.floor((r - 1) / 4)));
+const redSpeedFactor = (r) => Math.min(0.85, 0.62 + 0.02 * r);
 
 // ---------- 미로 ----------
 // 갈림길 18x18 을 깊이 우선으로 이어 만든 뒤, 막힌 벽을 일부 터서 돌아갈 길(고리)을 만든다
@@ -135,7 +135,7 @@ function startRound(st, round) {
   const far = nodes.filter(([x, y]) => fromStart[y * T + x] >= 16 && !blockedKeys.has(y * T + x));
   for (let i = 0; i < n; i++) {
     const c = pick(far.length ? far : nodes);
-    st.cars.push({ x: c[0], y: c[1], sx: c[0], sy: c[1], dir: -1, stun: 0, chase: Math.max(0.55, 0.92 - i * 0.1), rockKey: -1, anim: 0 });
+    st.cars.push({ x: c[0], y: c[1], sx: c[0], sy: c[1], dir: -1, stun: 0, chase: Math.max(0.5, 0.85 - i * 0.1), rockKey: -1, anim: 0 });
   }
   st.smoke = []; st.smokeT = 0;
   st.fuel = FUEL_MAX; st.seq = 0; st.mult = 1;
@@ -325,7 +325,7 @@ function sub(st, h, input) {
 }
 
 return {
-  T, CELLS, DX, DY, START, START_LIVES, FLAGS_PER_ROUND, PLAYER_SPEED, FUEL_MAX, POINTS, SMOKE_LIFE,
+  T, CELLS, DX, DY, START, START_LIVES, FLAGS_PER_ROUND, PLAYER_SPEED, FUEL_MAX, FUEL_DRAIN, EXTRA_LIFE_AT, STUN_SMOKE, STUN_ROCK, POINTS, SMOKE_LIFE,
   rng, genMaze, distField, newGame, startRound, step, isRoad, canGo, redCount, redSpeedFactor, isBonusRound,
 };
 })();

@@ -151,13 +151,13 @@ test('round 4 is a bonus round without red cars or smoke, and flags count double
 test('fuel drains over time and smoke costs more; out of fuel means slow and no smoke', () => {
   const st = calm();
   run(st, 10);
-  assert.ok(Math.abs(st.fuel - (L.FUEL_MAX - 11)) < 0.5);
+  assert.ok(Math.abs(st.fuel - (L.FUEL_MAX - 10 * L.FUEL_DRAIN)) < 0.5);
   const p = st.player;
   const d = [0, 1, 2, 3].find((x) => L.canGo(st, p.x, p.y, x));
   run(st, 0.2, { want: d, smoke: false });
   const f0 = st.fuel;
   run(st, 1, { want: d, smoke: true });
-  assert.ok(st.smoke.length > 0 && st.fuel < f0 - 1.1 - 1);
+  assert.ok(st.smoke.length > 0 && st.fuel < f0 - L.FUEL_DRAIN - 1);
   st.fuel = 0; st.smoke = [];
   run(st, 0.5, { want: d, smoke: true });
   assert.strictEqual(st.smoke.length, 0);
@@ -262,9 +262,13 @@ test('losing the last life ends the game, flags already taken stay taken after a
   assert.strictEqual(st.phase, 'over');
 });
 
-test('extra life at 20000 points', () => {
+test('extra life at the first extra life score', () => {
+  const low = calm();
+  low.score = L.EXTRA_LIFE_AT[0] - 1000;
+  const g = low.flags[0]; low.player.x = g.x; low.player.y = g.y; run(low, 0.02);
+  assert.strictEqual(low.lives, L.START_LIVES, 'not yet');
   const st = calm();
-  st.score = 19950;
+  st.score = L.EXTRA_LIFE_AT[0] - 50;
   const f = st.flags[0]; st.player.x = f.x; st.player.y = f.y; run(st, 0.02);
   assert.strictEqual(st.lives, L.START_LIVES + 1);
 });
